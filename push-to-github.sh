@@ -29,13 +29,13 @@ echo -e "${BOLD}╚════════════════════�
 read -rp "  GitHub username: " GH_USER
 [ -z "$GH_USER" ] && { echo "Username tidak boleh kosong."; exit 1; }
 
-REPO_URL="https://github.com/$GH_USER/infralks26.git"
+REPO_URL="https://github.com/$GH_USER/infraautomation.git"
 
 echo ""
 echo -e "  Repository yang akan dibuat: ${CYAN}$REPO_URL${NC}"
 echo ""
-echo -e "  ${YELLOW}Pastikan repository 'infralks26' sudah dibuat di GitHub:${NC}"
-echo -e "  https://github.com/new → Repository name: infralks26"
+echo -e "  ${YELLOW}Pastikan repository 'infraautomation' sudah dibuat di GitHub:${NC}"
+echo -e "  https://github.com/new → Repository name: infraautomation"
 echo -e "  Pilih: Public, jangan centang 'Initialize this repository'"
 echo ""
 read -rp "  Sudah dibuat? (tekan Enter untuk lanjut)" _
@@ -83,7 +83,7 @@ echo ""
 echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}${BOLD}║  Kode berhasil di-push ke GitHub!               ║${NC}"
 echo -e "${GREEN}${BOLD}╠══════════════════════════════════════════════════╣${NC}"
-echo -e "${BOLD}║${NC}  URL: ${CYAN}https://github.com/$GH_USER/infralks26${NC}"
+echo -e "${BOLD}║${NC}  URL: ${CYAN}https://github.com/$GH_USER/infraautomation${NC}"
 echo -e "${BOLD}║${NC}"
 echo -e "${BOLD}║${NC}  Langkah berikutnya:"
 echo -e "${BOLD}║${NC}  1. Buka GitHub → Settings → Collaborators"
