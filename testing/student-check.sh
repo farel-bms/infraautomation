@@ -258,7 +258,7 @@ if [ -n "$ALB_DNS" ]; then
       -H "Content-Type: application/json" -d '{"name":"Updated","position":"Winner"}' 2>/dev/null || echo "000")
     [ "$UP" = "200" ] && pass "CRUD Update: 200" || fail "CRUD Update: $UP"
     DL=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 -X DELETE "http://$ALB_DNS/api/users/$USER_ID" 2>/dev/null || echo "000")
-    [ "$DL" = "200" ] && pass "CRUD Delete: 200" || fail "CRUD Delete: $DL"
+    [[ "$DL" = "200" || "$DL" = "204" ]] && pass "CRUD Delete: $DL" || fail "CRUD Delete: $DL (seharusnya 200 atau 204)"
   else
     fail "CRUD Create gagal: $CR"
   fi

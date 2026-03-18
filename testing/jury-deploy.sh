@@ -216,6 +216,38 @@ log "terraform apply..."
 terraform apply -auto-approve tfplan 2>&1 | tee -a "$LOG_FILE"
 ok "terraform apply selesai"
 
+# Ensure route 10.1.0.0/16 exists in lks-private-rt (Virginia)
+log "Verifikasi route 10.1.0.0/16 di lks-private-rt..."
+PRIV_RT=$(aws ec2 describe-route-tables \
+  --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:Name,Values=lks-private-rt" \
+  --query 'RouteTables[0].RouteTableId' --output text --region us-east-1 2>/dev/null || echo "")
+if [ -n "$PRIV_RT" ] && [ "$PRIV_RT" != "None" ]; then
+  RT_ROUTE=$(aws ec2 describe-route-tables \
+    --route-table-ids "$PRIV_RT" \
+    --query "RouteTables[0].Routes[?DestinationCidrBlock=='10.1.0.0/16'] | length(@)" \
+    --output text --region us-east-1 2>/dev/null || echo "0")
+  if [ "${RT_ROUTE:-0}" -eq 0 ]; then
+    warn "Route 10.1.0.0/16 tidak ada — menambahkan manual via peering connection..."
+    PCX_ID=$(aws ec2 describe-vpc-peering-connections \
+      --filters "Name=tag:Name,Values=pcx-lks-2026" "Name=status-code,Values=active" \
+      --query 'VpcPeeringConnections[0].VpcPeeringConnectionId' \
+      --output text --region us-east-1 2>/dev/null || echo "")
+    if [ -n "$PCX_ID" ] && [ "$PCX_ID" != "None" ]; then
+      aws ec2 create-route \
+        --route-table-id "$PRIV_RT" \
+        --destination-cidr-block "10.1.0.0/16" \
+        --vpc-peering-connection-id "$PCX_ID" \
+        --region us-east-1 2>/dev/null \
+        && ok "Route 10.1.0.0/16 ditambahkan ke lks-private-rt" \
+        || warn "Gagal tambah route — mungkin sudah ada"
+    else
+      warn "Peering connection tidak aktif — cek VPC Peering di Console"
+    fi
+  else
+    ok "Route 10.1.0.0/16 sudah ada di lks-private-rt"
+  fi
+fi
+
 # Ensure TCP 9100 rule exists in lks-sg-ecs (sometimes missed if SG pre-existed)
 log "Verifikasi rule TCP 9100 di lks-sg-ecs..."
 SG_ECS_CHECK=$(terraform output -raw sg_ecs_id 2>/dev/null || echo "")
