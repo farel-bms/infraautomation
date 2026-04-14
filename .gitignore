@@ -11,7 +11,6 @@ terraform.tfvars
 
 # ── Terraform — only Section 3.2-3.6 modules are pushed ──
 # Exclude all terraform first, then include what's needed
-terraform/**
 !terraform/
 !terraform/*.tf
 !terraform/*.tfvars.example
