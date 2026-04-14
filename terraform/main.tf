@@ -76,3 +76,10 @@ module "s3" {
   tfstate_bucket_name = "lks-tfstate-${var.student_name}-${substr(var.aws_account_id, -8, -1)}"
   assets_bucket_name  = "lks-app-assets-${var.student_name}-2026"
 }
+
+
+# ── 1. Monitoring VPC — us-west-2 ───────────────────────
+module "vpc_monitoring" {
+  source = "./modules/monitoring_vpc"
+}
+
