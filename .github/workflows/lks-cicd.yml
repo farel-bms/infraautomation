@@ -105,12 +105,11 @@ jobs:
       - name: Login to ECR us-west-2
         run: |
           aws ecr get-login-password --region us-west-2 \
-            | docker login --username AWS --password-stdin $ECR_REGISTRY
+            | docker login --username AWS --password-stdin $ECR_REGISTRY_MONITORING
 
       - name: Build & push — Grafana
         env: { IMAGE_TAG: "${{ github.sha }}" }
         run: |
-          IMG="$ECR_REGISTRY/lks-api-app"
           docker build -t 147252727438.dkr.ecr.us-west-2.amazonaws.com/lks-grafana:latest ./monitoring/grafana
           docker push 147252727438.dkr.ecr.us-west-2.amazonaws.com/lks-grafana:latest
           echo "Pushed Grafana"
@@ -118,7 +117,6 @@ jobs:
       - name: Build & push — Prometheus
         env: { IMAGE_TAG: "${{ github.sha }}" }
         run: |
-          IMG="$ECR_REGISTRY/lks-api-app"
           docker build -t 147252727438.dkr.ecr.us-west-2.amazonaws.com/lks-prometheus ./monitoring/prometheus
           docker push 147252727438.dkr.ecr.us-west-2.amazonaws.com/lks-prometheus
           echo "Pushed Prometheus"
